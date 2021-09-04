@@ -3,6 +3,9 @@
 
 # Python stuff
 venv
+*.pyc
+__pycache__
+*.egg-info
 
 # Data
 data
