@@ -1,0 +1,9 @@
+# macos stuff
+.DS_Store
+
+# Python stuff
+venv
+
+# Data
+data
+*.fea
