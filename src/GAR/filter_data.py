@@ -71,6 +71,7 @@ def filter_mh(src_mh: pd.DataFrame, f_hs: pd.DataFrame,
                     suffixes=('', 'x'))
     mhm.sort_values(['OBJECTID', 'PARENTOBJID', 'LEVEL'], inplace=True)
     mhm.drop_duplicates(['OBJECTID'], inplace=True, ignore_index=True)
+    mhf = mhm[mhf.columns].copy()
     assert len(mhf.OBJECTID.unique()) == len(mhf)
     mhf.drop('ISACTIVE', axis=1, inplace=True)
     return mhf.reset_index(drop=True)
@@ -84,6 +85,6 @@ def filter_all(data: namedtuple) -> namedtuple:
     fhs = filter_hs(data.hs)
     fhp = filter_hp(data.hp, fhs)
     fao = filter_ao(data.ao)
-    fmh = filter_mh(data.mh, fao)
+    fmh = filter_mh(data.mh, fhs, fao)
     filtered = Data(hs=fhs, hp=fhp, ao=fao, mh=fmh)
     return filtered

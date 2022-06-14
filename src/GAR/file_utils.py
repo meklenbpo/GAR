@@ -105,3 +105,33 @@ def load_all_data(zfn: str, region: str) -> namedtuple:
         ao=load_xml_from_zip(zfn, filenames.ao, 'OBJECT', ao_attrs)
     )
     return data
+
+
+def get_filesize(zfn: str, ok2: str) -> List[int]:
+    """Compute file sizes of all four meaningful files within
+    archive.
+    """
+    rfn = get_region_filenames(zfn, ok2)
+    with zipfile.ZipFile(zfn) as z:
+        fss = [z.getinfo(fn).file_size for fn in rfn]
+    return fss
+
+
+def get_all_filesizes(zfn: str) -> pd.DataFrame:
+    """Compute file size statistics across all regions present in the
+    zip file.
+    """
+    regions = get_list_of_regions(zfn)
+    fss = [[region] + get_filesize(zfn, region) for region in regions]
+    fsdf = pd.DataFrame(fss, columns = ['region', 'hs', 'hp', 'ao', 'mh'])
+    return fsdf
+
+
+def get_list_of_active_regions(zfn: str) -> List[str]:
+    """Scan a list of regions and return only those that have real
+    address data.
+    """
+    fsdf = get_all_filesizes(zfn)
+    fltd = fsdf.loc[fsdf.hs > 100]
+    active_regions = list(fltd.region)
+    return active_regions

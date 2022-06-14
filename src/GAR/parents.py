@@ -70,6 +70,6 @@ def add_parents(hl: pd.DataFrame, mh: pd.DataFrame,
     parents = fill_parents(hl=hl, mh=mh, ao=ao)
     empty_t = format_final(parents)
     final = spread_out_parents_by_level(empty_t, parents)
-    assert list(final.ADMR_S.unique()) == ['']
-    assert list(final.ADMR_F.unique()) == ['']
+    final.drop('ADMR_S', axis=1, inplace=True)
+    final.drop('ADMR_F', axis=1, inplace=True)
     return final.reset_index(drop=True)
