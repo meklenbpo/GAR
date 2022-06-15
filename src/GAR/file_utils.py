@@ -85,23 +85,6 @@ def load_xml_from_zip(zfn: str, xmlfn: str, tag: str,
     return df
 
 
-def load_xml_from_unzip(xmlfn: str, tag: str,
-                        req_attr: List[str]) -> pd.DataFrame:
-    """Access an XML file (`xmlfn`) stored inside a zip file (`zfn`).
-    Iteratively read through it and load only required attributes (`req_attr`)
-    into a pandas DataFrame.
-    """
-    xml = etree.iterparse(xmlfn, tag=tag, events=['end'])
-    rows = []
-    for _, element in xml:
-        row = {}
-        for attr in req_attr:
-            row[attr] = element.get(attr)
-        rows.append(row)
-    df = pd.DataFrame(rows)
-    return df
-
-
 def load_all_data(zfn: str, region: str) -> namedtuple:
     """Load all required files from a zip archive into a namedtuple of
     DataFrames.
@@ -120,28 +103,6 @@ def load_all_data(zfn: str, region: str) -> namedtuple:
         hp=load_xml_from_zip(zfn, filenames.hp, 'PARAM', hp_attrs),
         mh=load_xml_from_zip(zfn, filenames.mh, 'ITEM', mh_attrs),
         ao=load_xml_from_zip(zfn, filenames.ao, 'OBJECT', ao_attrs)
-    )
-    return data
-
-
-def load_all_data_unzipped(zfn: str, region: str) -> namedtuple:
-    """Load all required files from a zip archive into a namedtuple of
-    DataFrames.
-    """
-    Data = namedtuple('Data', 'hs hp mh ao')
-    hs_attrs = ['OBJECTID', 'OBJECTGUID', 'HOUSENUM', 'HOUSETYPE', 'ISACTIVE',
-                'ADDNUM1', 'ADDTYPE1', 'ADDNUM2', 'ADDTYPE2']
-    hp_attrs = ['OBJECTID', 'CHANGEIDEND', 'TYPEID', 'VALUE']
-    ao_attrs = ['OBJECTID', 'NAME', 'TYPENAME', 'LEVEL', 'ISACTIVE',
-                'ISACTUAL', 'NEXTID', 'ENDDATE']
-    mh_attrs = ['OBJECTID', 'PARENTOBJID', 'OKTMO', 'ISACTIVE', 'NEXTID',
-                'ENDDATE']
-    filenames = get_region_filenames(zfn, region)
-    data = Data(
-        hs=load_xml_from_unzip(filenames.hs, 'HOUSE', hs_attrs),
-        hp=load_xml_from_unzip(filenames.hp, 'PARAM', hp_attrs),
-        mh=load_xml_from_unzip(filenames.mh, 'ITEM', mh_attrs),
-        ao=load_xml_from_unzip(filenames.ao, 'OBJECT', ao_attrs)
     )
     return data
 
