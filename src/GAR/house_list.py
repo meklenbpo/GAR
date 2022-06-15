@@ -67,7 +67,7 @@ def add_missing_hparams(hs: pd.DataFrame, hp: pd.DataFrame) -> pd.DataFrame:
     h_wo_pc_dc = create_dummy_current(h_wo_pc)
     h_wo_curr_pc_dc = create_dummy_current(h_wo_curr_pc)
     dupe_cols = ['OBJECTID', 'CHANGEIDEND', 'TYPEID']
-    full_hp = hp.append(h_wo_pc_dc).append(h_wo_curr_pc_dc)
+    full_hp = pd.concat([hp, h_wo_pc_dc, h_wo_curr_pc_dc])
     full_hp = full_hp.drop_duplicates(dupe_cols)
     return full_hp.reset_index(drop=True)
 
