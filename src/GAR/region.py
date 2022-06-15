@@ -58,7 +58,7 @@ def process_region(src_zip_fn: str, reg_code: str, dest_dir: str) -> None:
     by contract and return ready data as a pandas DataFrame.
     """
     t1 = time.perf_counter()
-    data = load_all_data(src_zip_fn, reg_code)
+    data = load_all_data_unzipped(src_zip_fn, reg_code)
     logger.trace('load_all_data completed')
     data = cast_types(data)
     logger.trace('cast_types completed')
